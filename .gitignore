@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data & Model Artifacts
+data/raw/
+data/models/
+*.pkl
+*.pt
+*.pth
+*.h5
+*.joblib
+
+# Environment
+.env
+.flake8
+.idea/
+.vscode/
+*.swp
+
+# Docker
+.dockerignore
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Node (future frontend)
+node_modules/
+dist/
+.next/

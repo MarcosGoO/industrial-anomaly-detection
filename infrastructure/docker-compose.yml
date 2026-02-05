@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  ml-backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    volumes:
+      # Mount the entire project so ml_pipeline scripts can resolve imports
+      - ..:/workspace
+      # Persist generated data and trained models across runs
+      - ../data:/app/data
+    working_dir: /workspace/ml_pipeline/scripts
+    command:
+      - python
+      - download_data.py
+      - --mode
+      - synthetic
+      - --output-dir
+      - /app/data/raw
+    environment:
+      - PYTHONPATH=/workspace/backend
+
+  ml-train:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace
+      - ../data:/app/data
+    working_dir: /workspace/ml_pipeline/scripts
+    command:
+      - python
+      - train_models.py
+      - --data-dir
+      - /app/data/raw
+      - --output-dir
+      - /app/data/models
+    environment:
+      - PYTHONPATH=/workspace/backend
+    depends_on:
+      - ml-backend
+
+  ml-tests:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace
+    working_dir: /workspace/backend
+    command:
+      - pytest
+      - tests/
+      - -v
+    environment:
+      - PYTHONPATH=/workspace/backend
