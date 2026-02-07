@@ -165,16 +165,22 @@ class EnsembleDetector:
         else:
             if_scores = None
 
-        # LSTM predictions
-        if self.lstm is not None:
-            if X_sequences is None:
-                raise ValueError("X_sequences required when LSTM model is present")
+        # LSTM predictions (optional if sequences not provided)
+        if self.lstm is not None and X_sequences is not None:
             lstm_scores, _ = self.lstm.predict(X_sequences)
             # LSTM outputs are already in [0,1] from sigmoid
             ensemble_scores += self.weight_lstm * lstm_scores
             active_weights["lstm"] = self.weight_lstm
         else:
             lstm_scores = None
+
+        # Normalize ensemble scores if not all models were used
+        total_weight = sum(active_weights.values())
+        if total_weight > 0 and not np.isclose(total_weight, 1.0):
+            ensemble_scores = ensemble_scores / total_weight
+
+        # Clip scores to [0,1] to handle numerical precision issues
+        ensemble_scores = np.clip(ensemble_scores, 0.0, 1.0)
 
         # Generate labels and alert levels
         ensemble_labels = self._compute_labels(ensemble_scores)

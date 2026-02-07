@@ -141,13 +141,21 @@ class TestEnsembleDetector:
         assert result["weights"]["autoencoder"] == 1.0
 
     def test_predict_lstm_without_sequences(self, trained_models):
-        """Test that LSTM prediction fails without sequences."""
+        """Test that LSTM is skipped when sequences not provided."""
         ae, iforest, lstm, X, _ = trained_models
 
         ensemble = EnsembleDetector(autoencoder=ae, isolation_forest=iforest, lstm=lstm)
 
-        with pytest.raises(ValueError, match="X_sequences required"):
-            ensemble.predict(X)
+        # Should work without sequences, just skip LSTM
+        result = ensemble.predict(X)
+
+        # LSTM scores should be None
+        assert result["lstm_scores"] is None
+
+        # Only autoencoder and isolation forest should be in weights
+        assert "autoencoder" in result["weights"]
+        assert "isolation_forest" in result["weights"]
+        assert "lstm" not in result["weights"]
 
     def test_alert_level_classification(self, trained_models):
         """Test alert level classification."""
