@@ -21,35 +21,57 @@ body {
   box-sizing: border-box;
 }
 
-@layer components {
-  .metric-card {
-    @apply bg-slate-800 backdrop-blur-sm rounded-lg p-6 border border-slate-700 transition-all duration-200 hover:border-slate-600;
-    background-color: rgba(30, 41, 59, 0.5);
-    border-color: rgba(51, 65, 85, 0.5);
-  }
+/* Custom component classes - using pure CSS to avoid @apply issues */
+.metric-card {
+  background-color: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  transition: all 200ms;
+}
 
-  .section-card {
-    @apply backdrop-blur-sm rounded-lg p-6 border border-slate-700;
-    background-color: rgba(30, 41, 59, 0.8);
-    border-color: rgba(51, 65, 85, 0.5);
-  }
+.metric-card:hover {
+  border-color: rgb(71, 85, 105);
+}
 
-  .page-title {
-    @apply text-2xl font-semibold text-slate-100 tracking-tight;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
-  }
+.section-card {
+  background-color: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(51, 65, 85, 0.5);
+}
 
-  .section-title {
-    @apply text-lg font-medium text-slate-200 tracking-tight;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
-  }
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  letter-spacing: -0.025em;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
 
-  .stat-value {
-    @apply text-3xl font-bold tracking-tight;
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
-  }
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  letter-spacing: -0.025em;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
 
-  .label-text {
-    @apply text-sm font-medium text-slate-400 uppercase tracking-wider;
-  }
+.stat-value {
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+.label-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
