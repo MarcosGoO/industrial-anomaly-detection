@@ -1,9 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -15,4 +19,30 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+@layer components {
+  .metric-card {
+    @apply bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-slate-700/50 transition-all duration-200 hover:border-slate-600;
+  }
+
+  .section-card {
+    @apply bg-slate-800/80 backdrop-blur-sm rounded-lg p-6 border border-slate-700/50;
+  }
+
+  .page-title {
+    @apply text-2xl font-display font-semibold text-slate-100 tracking-tight;
+  }
+
+  .section-title {
+    @apply text-lg font-display font-medium text-slate-200 tracking-tight;
+  }
+
+  .stat-value {
+    @apply text-3xl font-display font-bold tracking-tight;
+  }
+
+  .label-text {
+    @apply text-sm font-medium text-slate-400 uppercase tracking-wider;
+  }
 }

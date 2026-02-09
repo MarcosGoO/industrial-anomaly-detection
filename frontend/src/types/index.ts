@@ -5,15 +5,33 @@
 export type AlertLevel = 'normal' | 'warning' | 'critical';
 
 export interface AnomalyPrediction {
-  sample_index: number;
+  sample_index?: number;
   ensemble_score: number;
-  alert_level: AlertLevel;
+  alert_level?: AlertLevel;
   is_anomaly: boolean;
-  individual_scores: {
+  individual_scores?: {
     autoencoder?: number;
     isolation_forest?: number;
     lstm?: number;
   };
+  // Extended fields for real-time monitoring
+  model_scores?: {
+    autoencoder: number;
+    isolation_forest: number;
+    lstm: number;
+  };
+  features?: {
+    rms: number;
+    peak: number;
+    kurtosis: number;
+    skewness: number;
+    crest_factor: number;
+    energy: number;
+  };
+  health_score?: number;
+  temperature?: number;
+  rul_hours?: number;
+  timestamp?: string;
 }
 
 export interface PredictionSummary {

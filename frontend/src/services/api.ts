@@ -68,6 +68,23 @@ class ApiService {
     const response = await this.client.get('/');
     return response.data;
   }
+
+  /**
+   * Generic POST request
+   */
+  async post<T>(url: string, data: unknown): Promise<T> {
+    const response = await this.client.post<T>(url, data);
+    return response.data;
+  }
+
+  /**
+   * Generic GET request
+   */
+  async get<T>(url: string): Promise<T> {
+    const response = await this.client.get<T>(url);
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();
+export const api = apiService; // Export as 'api' for convenience
