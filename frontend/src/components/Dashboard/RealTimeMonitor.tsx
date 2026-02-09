@@ -9,9 +9,9 @@ import {
   Thermometer,
   Clock,
   TrendingUp,
-  BarChart3,
 } from 'lucide-react';
 import { usePredictions } from '../../hooks/usePredictions';
+import { WaveformChart, SpectrumChart } from '../Visualizations';
 
 export function RealTimeMonitor() {
   const { currentPrediction } = usePredictions({ autoStart: true, intervalMs: 3000 });
@@ -127,28 +127,26 @@ export function RealTimeMonitor() {
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Waveform Chart */}
-        <div className="section-card">
-          <h3 className="section-title mb-4">Live Waveform</h3>
-          <div className="h-72 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm rounded-lg border border-slate-700/50">
-            <div className="text-center">
-              <Activity className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-              <div className="text-sm font-medium text-slate-500">Waveform Visualization</div>
-              <div className="text-xs text-slate-600 mt-1">Coming in Sprint 3.4</div>
-            </div>
-          </div>
-        </div>
+        {currentPrediction?.waveform && (
+          <WaveformChart
+            data={currentPrediction.waveform}
+            title="Live Waveform"
+            color="#3b82f6"
+            height={300}
+          />
+        )}
 
         {/* Frequency Spectrum Chart */}
-        <div className="section-card">
-          <h3 className="section-title mb-4">Frequency Spectrum</h3>
-          <div className="h-72 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm rounded-lg border border-slate-700/50">
-            <div className="text-center">
-              <BarChart3 className="w-12 h-12 text-slate-700 mx-auto mb-3" />
-              <div className="text-sm font-medium text-slate-500">FFT Spectrum Visualization</div>
-              <div className="text-xs text-slate-600 mt-1">Coming in Sprint 3.4</div>
-            </div>
-          </div>
-        </div>
+        {currentPrediction?.spectrum && (
+          <SpectrumChart
+            frequencies={currentPrediction.spectrum.frequencies}
+            magnitudes={currentPrediction.spectrum.magnitudes}
+            title="Frequency Spectrum"
+            color="#10b981"
+            height={300}
+            showPeaks={true}
+          />
+        )}
       </div>
 
       {/* Feature Values */}

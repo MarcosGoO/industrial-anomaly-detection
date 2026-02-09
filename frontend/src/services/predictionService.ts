@@ -9,20 +9,64 @@ import type { AnomalyPrediction } from '../types';
 /**
  * Generate synthetic sensor data for demonstration
  */
-export function generateSyntheticSensorData(): number[] {
-  const dataPoints = 100;
-  const baseSignal = Array.from({ length: dataPoints }, (_, i) => {
-    // Combine multiple sine waves to simulate vibration
-    const time = i / dataPoints;
-    const mainFreq = Math.sin(2 * Math.PI * 10 * time) * 2;
-    const harmonic1 = Math.sin(2 * Math.PI * 20 * time) * 0.5;
-    const harmonic2 = Math.sin(2 * Math.PI * 30 * time) * 0.3;
-    const noise = (Math.random() - 0.5) * 0.2;
+export function generateSyntheticSensorData(anomalous: boolean = false): number[] {
+  const dataPoints = 200;
+  const samplingRate = 20; // Hz
 
-    return mainFreq + harmonic1 + harmonic2 + noise;
+  const baseSignal = Array.from({ length: dataPoints }, (_, i) => {
+    const time = i / samplingRate;
+
+    // Normal vibration pattern
+    const mainFreq = Math.sin(2 * Math.PI * 30 * time) * 1.5;
+    const harmonic1 = Math.sin(2 * Math.PI * 60 * time) * 0.4;
+    const harmonic2 = Math.sin(2 * Math.PI * 90 * time) * 0.2;
+    const noise = (Math.random() - 0.5) * 0.15;
+
+    let signal = mainFreq + harmonic1 + harmonic2 + noise;
+
+    // Add anomalous patterns
+    if (anomalous) {
+      // Add high-frequency spike at 120 Hz
+      const spike = Math.sin(2 * Math.PI * 120 * time) * 1.2;
+      // Add amplitude modulation
+      const modulation = 1 + 0.5 * Math.sin(2 * Math.PI * 2 * time);
+      signal = signal * modulation + spike;
+    }
+
+    return signal;
   });
 
   return baseSignal;
+}
+
+/**
+ * Calculate FFT for spectrum analysis
+ */
+function calculateFFT(signal: number[], samplingRate: number = 20): { frequencies: number[], magnitudes: number[] } {
+  const N = signal.length;
+  const frequencies: number[] = [];
+  const magnitudes: number[] = [];
+
+  // Simple DFT implementation (for demo purposes)
+  // In production, use a proper FFT library
+  for (let k = 0; k < N / 2; k++) {
+    const freq = (k * samplingRate) / N;
+    frequencies.push(freq);
+
+    let real = 0;
+    let imag = 0;
+
+    for (let n = 0; n < N; n++) {
+      const angle = (2 * Math.PI * k * n) / N;
+      real += signal[n] * Math.cos(angle);
+      imag -= signal[n] * Math.sin(angle);
+    }
+
+    const magnitude = Math.sqrt(real * real + imag * imag) / N;
+    magnitudes.push(magnitude);
+  }
+
+  return { frequencies, magnitudes };
 }
 
 /**
@@ -67,6 +111,12 @@ export function generateMockPrediction(): AnomalyPrediction {
     lstmScore * 0.3
   );
 
+  // Generate waveform data
+  const waveform = generateSyntheticSensorData(isAnomalous);
+
+  // Calculate spectrum from waveform
+  const spectrum = calculateFFT(waveform, 20);
+
   return {
     is_anomaly: ensembleScore > 0.5,
     ensemble_score: Number(ensembleScore.toFixed(4)),
@@ -87,6 +137,8 @@ export function generateMockPrediction(): AnomalyPrediction {
     temperature: 38.0 + Math.random() * 8.0,
     rul_hours: isAnomalous ? 24 + Math.random() * 72 : 100 + Math.random() * 100,
     timestamp: new Date().toISOString(),
+    waveform,
+    spectrum,
   };
 }
 
@@ -116,8 +168,8 @@ export function calculateFeatureStats(predictions: AnomalyPrediction[]) {
   const latest = predictions[0];
   const history = predictions.slice(1, Math.min(predictions.length, 100));
 
-  const avgHealthScore = history.reduce((sum, p) => sum + p.health_score, 0) / history.length;
-  const avgTemp = history.reduce((sum, p) => sum + p.temperature, 0) / history.length;
+  const avgHealthScore = history.reduce((sum, p) => sum + (p.health_score ?? 0), 0) / history.length;
+  const avgTemp = history.reduce((sum, p) => sum + (p.temperature ?? 0), 0) / history.length;
   const anomalyCount = history.filter(p => p.is_anomaly).length;
 
   return {

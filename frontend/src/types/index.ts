@@ -32,6 +32,12 @@ export interface AnomalyPrediction {
   temperature?: number;
   rul_hours?: number;
   timestamp?: string;
+  // Visualization data
+  waveform?: number[];
+  spectrum?: {
+    frequencies: number[];
+    magnitudes: number[];
+  };
 }
 
 export interface PredictionSummary {
