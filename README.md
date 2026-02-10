@@ -115,18 +115,6 @@ docker-compose up --build ml-train      # train model
 
 ---
 
-## Roadmap
-
-| Sprint | Status | Scope |
-|--------|--------|-------|
-| 1 | ✅ Current | Foundation: data, features, Autoencoder |
-| 2 | Planned | Isolation Forest, LSTM, Ensemble, FastAPI |
-| 3 | Planned | React dashboard, WebSockets, real-time viz |
-| 4 | Planned | Adaptive thresholds, SHAP, RUL prediction |
-| 5 | Planned | Polish, Docker orchestration, CI/CD |
-
----
-
 ## Tech Stack
 **Backend:** Python 3.11, PyTorch, scikit-learn, SciPy, PyWavelets, NumPy, Pandas
 **Frontend (Sprint 3+):** React 18 + TypeScript, D3.js, Recharts, TailwindCSS
